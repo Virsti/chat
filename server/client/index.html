@@ -1,55 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <h1 style="text-align: center">CHAT ROOM</h1>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Chat</title>
+	</head>
+	<body>
+		<h1 style="text-align: center">CHAT ROOM</h1>
 
-  <div id="statusDiv" class="status">Connecting...</div>
+		<div id="status" class="status">Connecting...</div>
 
-  <div id="messages"></div>
+		<div id="messages"></div>
 
-  <div class="input-container">
-    <input
-    type="text"
-    id="messageInput"
-    placeholder="Type your message..."
-    autocomplete="off"
-    disabled
-    />
-    <button id="sendButton" disabled></button>
-  </div>
+		<div class="input-container">
+			<input
+				type="text"
+				id="messageInput"
+				placeholder="Type your message..."
+				autocomplete="off"
+				disabled
+			/>
+			<button id="sendButton" disabled>Send</button>
+		</div>
 
-  <script>
-    const messagesContainer = document.getElementById('messages');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const statusDiv = document.getElementById('statusDiv');
+		<script>
+			const messagesContainer = document.getElementById('messages');
+			const messageInput = document.getElementById('messageInput');
+			const sendButton = document.getElementById('sendButton');
+			const statusDiv = document.getElementById('status');
 
-    let socket = null;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
+			let socket = null;
+			let reconnectAttempts = 0;
+			const maxReconnectAttempts = 5;
 
-    function connectWebSocket(){
-      try{
-        const protocol = 
-        window.location.protocol === "https:" ? 'wss:' : 'ws:';
-        const wsHost = 
-        window.location.hostname === '127.0.0.1'
-        ? 'localhost:3000'
-        : window.location.host;
-        socket = new WebSocket ('${protocol}//${wsHost}/ws');
+			function connectWebSocket() {
+				try {
+					const protocol =
+						window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+					const wsHost =
+						window.location.hostname === '127.0.0.1'
+							? 'localhost:3000'
+							: window.location.host;
+					socket = new WebSocket(`${protocol}//${wsHost}/ws`);
 
-        setupSocketEvents();
-      }
-      catch (error){
-        console.error('Failed to create WedSocket:', error);
-        handleDisconnection();
-      }
-    }
+					setupSocketEvents();
+				} catch (error) {
+					console.error('Failed to create WebSocket:', error);
+					handleDisconnection();
+				}
+			}
 
     function setupSocketEvents(){
       socket.onopen = function (){
@@ -63,26 +62,26 @@
         messageInput.focus();
       };
 
-      socket.onmessage = function (event){
-        try{
-          const data = JSON.parse(event.data);
-          addMessage(data.data, data.type, data.timestamp);
-        }
-        catch(e){
-          addMessage(event.data, 'message');
-        }
-      };
-      socket.onerror = function (error) {
-        console.error('Websocket error:',error);
-        statusDiv.textContent = 'Connection error';
-        statusDiv.style.backgroundColor = '#ffebee';
-      };
+				socket.onmessage = function (event) {
+					try {
+						const data = JSON.parse(event.data);
+						addMessage(data.data, data.type, data.timestamp);
+					} catch (e) {
+						addMessage(event.data, 'message');
+					}
+				};
 
-      socket.onclose = function (event) {
-        console.log('WebSocket closed:', event.code, event.reason);
-        handleDisconnection();
-      };
-    }
+				socket.onerror = function (error) {
+					console.error('WebSocket error:', error);
+					statusDiv.textContent = 'Connection error';
+					statusDiv.style.backgroundColor = '#ffebee';
+				};
+
+				socket.onclose = function (event) {
+					console.log('WebSocket closed:', event.code, event.reason);
+					handleDisconnection();
+				};
+			}
 
     function handleDisconnection() {
       statusDiv.textContent = 'Desconnected - Attempting to reconnect...';
@@ -92,18 +91,17 @@
        
     addMessage('Disconnected from server', 'system');
 
-    if (reconnectAttempts < maxReconnectAttempts){ //maxReconnectAttempts - максимальное коддичество попыток переподключения
-      reconnectAttempts++;
-      setTimeout(() =>{
-        connectWebSocket();
-      }, 2000 * reconnectAttempts); // Exponetial backoff
-
-    }else{
-      statusDiv.textContent = 'Failed to connect. Please refresh the page.';
-      statusDiv.style.backgroundColor = '#fff3e0';
-      addMessage('Failed to reconnect to server', 'error')
-    }
-    }
+				if (reconnectAttempts < maxReconnectAttempts) {
+					reconnectAttempts++;
+					setTimeout(() => {
+						connectWebSocket();
+					}, 2000 * reconnectAttempts); // Exponential backoff
+				} else {
+					statusDiv.textContent = 'Failed to connect. Please refresh the page.';
+					statusDiv.style.backgroundColor = '#ffebee';
+					addMessage('Failed to reconnect to server', 'error');
+				}
+			}
 
     //Отправка сообщения
     function sendMessage(){
@@ -114,41 +112,39 @@
       }
     }
 
-    //Добавление сообщение в чат
-    function addMessage(
-      text,
-      type = "message",
-      timestamp = new Date().toLocaleTimeString()//toLocaleTimeString - выводит время в формате текущего региона 
-      ){
-        const messageDiv = document.createElement('div');// добавление диву класс мессеж и тайп
-        messageDiv.className = `message ${type}`;
+			// Добавление сообщения в чат
+			function addMessage(
+				text,
+				type = 'message',
+				timestamp = new Date().toLocaleTimeString()
+			) {
+				const messageDiv = document.createElement('div');
+				messageDiv.className = `message ${type}`;
 
         const messageText = document.createElement(`div`);// показываем текст пользователю
         messageText.textContent = Text;
 
-        const timeSpan = document.createElement(`div`);// timeSpan- временная точка
-        timeSpan.className = 'timestamp';
-        timeSpan.textContent = timestamp;
+				const timeSpan = document.createElement('div');
+				timeSpan.className = 'timestamp';
+				timeSpan.textContent = timestamp;
 
-        messageDiv.appendChild(messageText); // добавляем окно текста
-        messageDiv.appendChild(timeSpan);// добавляем окно времени
+				messageDiv.appendChild(messageText);
+				messageDiv.appendChild(timeSpan);
 
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scroll = messagesContainer.scrollHeight;// пролистывет блок с сообщеними в самый низ что бы сообщения отображались
     }
 
-    // Обработчики событий
-    sendButton.addEventListener('click', sendMessage);// addEventListener - добавить событие, sendMessage - отправить сообщение
-    messageInput.addEventListener('keypress', function (e){ //keypress - нажатие на кнопку
-      if (e.key === 'Enter'){ // e - event - событие
-        sendMessage();
-      }
-    });
+			// Обработчики событий
+			sendButton.addEventListener('click', sendMessage);
+			messageInput.addEventListener('keypress', function (e) {
+				if (e.key === 'Enter') {
+					sendMessage();
+				}
+			});
 
-    // начинаем подключение
-    connectWebSocket();
-    
-
-  </script>
-</body>
+			// Начинаем подключение
+			connectWebSocket();
+		</script>
+	</body>
 </html>
