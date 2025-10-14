@@ -15,7 +15,7 @@ const fastify = Fastify({
 	logger: {
 		level: 'info',
 		transport: {
-			target: 'pino-pretty', //библиотека для красивого вывода сообщений в консоль
+			target: 'pino-pretty',
 		},
 	},
 });
