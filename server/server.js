@@ -1,12 +1,12 @@
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
-import fastifyFormbody from '@fastify/formbody';
-import fastifyWedsocket from '@fastify/farmbody';
+import formbody from '@fastify/formbody';
+import fastifyWedsocket from '@fastify/formbody';
 import path from 'path';
-import { fileURlToPath } from 'url';
+import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 
-const _filename = fileURLToPath(impert.meta.ure); //имя текущего файла
+const _filename = fileURLToPath(import.meta.url); //имя текущего файла
 const _dirname = path.dirname(_filename); // смотр в какой папке находится этот файл
 
 //Подключение Fastify
@@ -56,14 +56,14 @@ wss.on('connection', function connection(ws) {
     const messageData = JSON.stringify({
       type: "massage",
       data: data.toString(),
-      timastamp: new Data().tolocaleTimeSring(),
+      timastamp: new Date().tolocaleTimeSring(),
     });
 
     //Отправляем сообщение всем подключенным клиентам 
     clients.forEach(client => {
       if (client.readyState === 1){
         // 1 = OPEN
-        client.send(massageData);
+        client.send(messageData);
       }
     });
   });
@@ -99,7 +99,7 @@ fastify.get("/health", async(request, reply) => {
 });
 
 // Команда запуска сервера 
-const staty = async () => {
+const start = async () => {
   try {
     await fastify.listen({
       port: 3000,

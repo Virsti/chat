@@ -8,14 +8,14 @@
 <body>
   <h1 style="text-align: center">CHAT ROOM</h1>
 
-  <div id="status" class="status">Connecting...</div>
+  <div id="statusDiv" class="status">Connecting...</div>
 
-  <div id="messeges"></div>
+  <div id="messages"></div>
 
   <div class="input-container">
     <input
     type="text"
-    id="messegaInput"
+    id="messageInput"
     placeholder="Type your message..."
     autocomplete="off"
     disabled
@@ -27,7 +27,7 @@
     const messagesContainer = document.getElementById('messages');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
-    const statusDis = document.getElementById('status');
+    const statusDiv = document.getElementById('statusDiv');
 
     let socket = null;
     let reconnectAttempts = 0;
@@ -72,11 +72,12 @@
           addMessage(event.data, 'message');
         }
       };
-      socket.onerror = fuction (error) {
+      socket.onerror = function (error) {
         console.error('Websocket error:',error);
         statusDiv.textContent = 'Connection error';
         statusDiv.style.backgroundColor = '#ffebee';
       };
+
       socket.onclose = function (event) {
         console.log('WebSocket closed:', event.code, event.reason);
         handleDisconnection();
@@ -86,13 +87,13 @@
     function handleDisconnection() {
       statusDiv.textContent = 'Desconnected - Attempting to reconnect...';
       statusDiv.style.backgroundColor = '#fff3e0';
-      massageInput.disableg = true;
+      messageInput.disableg = true;
       sendButton.disabled = true;
        
     addMessage('Disconnected from server', 'system');
 
-    if (reconnectAttempts < maxreconnectAttempts){
-      recconnectAttempts++;
+    if (reconnectAttempts < maxReconnectAttempts){ //maxReconnectAttempts - максимальное коддичество попыток переподключения
+      reconnectAttempts++;
       setTimeout(() =>{
         connectWebSocket();
       }, 2000 * reconnectAttempts); // Exponetial backoff
@@ -105,9 +106,48 @@
     }
 
     //Отправка сообщения
-    function cendMessage(){
-      
+    function sendMessage(){
+      const message = messageInput.value.trim();
+      if (message && socket && socket.readyState === WedSocket.OPEN) {
+        socket.send(message);
+        messageImput.value = '';
+      }
     }
+
+    //Добавление сообщение в чат
+    function addMessage(
+      text,
+      type = "message",
+      timestamp = new Date().toLocaleTimeString()//toLocaleTimeString - выводит время в формате текущего региона 
+      ){
+        const messageDiv = document.createElement('div');// добавление диву класс мессеж и тайп
+        messageDiv.className = `message ${type}`;
+
+        const messageText = document.createElement(`div`);// показываем текст пользователю
+        messageText.textContent = Text;
+
+        const timeSpan = document.createElement(`div`);// timeSpan- временная точка
+        timeSpan.className = 'timestamp';
+        timeSpan.textContent = timestamp;
+
+        messageDiv.appendChild(messageText); // добавляем окно текста
+        messageDiv.appendChild(timeSpan);// добавляем окно времени
+
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scroll = messagesContainer.scrollHeight;// пролистывет блок с сообщеними в самый низ что бы сообщения отображались
+    }
+
+    // Обработчики событий
+    sendButton.addEventListener('click', sendMessage);// addEventListener - добавить событие, sendMessage - отправить сообщение
+    messageInput.addEventListener('keypress', function (e){ //keypress - нажатие на кнопку
+      if (e.key === 'Enter'){ // e - event - событие
+        sendMessage();
+      }
+    });
+
+    // начинаем подключение
+    connectWebSocket();
+    
 
   </script>
 </body>
