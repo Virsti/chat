@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Chat</title>
+		<link rel = "stylesheet" href="./style.css">
+		<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 	</head>
 	<body>
-		<h1 style="text-align: center">CHAT ROOM</h1>
+		<h1 style="text-align: center" class="logo">CHAT ROOM</h1>
 
-		<div id="status" class="status">Connecting...</div>
+		<div id="status" class="status"><i class='bx bx-station'></i></div>
 
-		<div id="messages"></div>
+		<div id="messages" class="chat-area"></div>
 
 		<div class="input-container">
 			<input
@@ -53,8 +56,7 @@
 			function setupSocketEvents() {
 				socket.onopen = function () {
 					console.log('WebSocket connected');
-					statusDiv.textContent = 'Connected';
-					statusDiv.style.backgroundColor = '#f1f8e9';
+					statusDiv.className = "status connected"
 					messageInput.disabled = false;
 					sendButton.disabled = false;
 					reconnectAttempts = 0;
@@ -73,8 +75,7 @@
 
 				socket.onerror = function (error) {
 					console.error('WebSocket error:', error);
-					statusDiv.textContent = 'Connection error';
-					statusDiv.style.backgroundColor = '#ffebee';
+					statusDiv.className = "status error"
 				};
 
 				socket.onclose = function (event) {
@@ -84,8 +85,7 @@
 			}
 
 			function handleDisconnection() {
-				statusDiv.textContent = 'Disconnected - Attempting to reconnect...';
-				statusDiv.style.backgroundColor = '#fff3e0';
+				statusDiv.className = "status reconnect"
 				messageInput.disabled = true;
 				sendButton.disabled = true;
 
@@ -97,8 +97,7 @@
 						connectWebSocket();
 					}, 2000 * reconnectAttempts); // Exponential backoff
 				} else {
-					statusDiv.textContent = 'Failed to connect. Please refresh the page.';
-					statusDiv.style.backgroundColor = '#ffebee';
+					statusDiv.className = "status error"
 					addMessage('Failed to reconnect to server', 'error');
 				}
 			}
