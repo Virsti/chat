@@ -4,14 +4,14 @@
     padding: 0;
 }
 body{
-    background-color: rgb(6, 10, 11);
+    background-color: rgb(40, 36, 43);
     height: 100dvh;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas: "logo" "chat_areas" "input_messages";
     gap: 1rem;
-    color:rgb(115, 0, 255);
+    color:rgb(153, 141, 162);
 }
 .status{
     position: absolute;
@@ -19,14 +19,14 @@ body{
     right: 1rem;
 }
 .status.connected{
-    color: rgb(198, 179, 203);
+    color: rgb(83, 114, 81);
 }
 .status.reconnect{
-    color:rgb(153, 0, 255);
+    color:rgb(121, 126, 75);
     
 }
 .status.error{
-    color:rgb(47, 18, 59);
+    color:rgb(112, 60, 60);
 }
 
 .logo{
@@ -38,8 +38,27 @@ body{
     max-height: 100%;
     overflow: hidden;
     overflow-y: auto;
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .input-container{
     grid-area: input_messages;
+}
+.timestamp{
+    color: rgb(22, 21, 23);
+}
+.messageText{
+    color:rgb(91, 86, 95);
+   
+}
+.message{
+    background: rgba(255, 255, 255, 0.07);
+    width: fit-content;
+    padding: 0.2rem 0.9rem;
+    border-radius: 4px 4px 4px 4px;
 }

@@ -41,6 +41,7 @@ const wss = new WebSocketServer({ noServer: true });
 
 wss.on('connection', function connection(ws) {
 	console.log('Client connected');
+	const userId = new Date().getTime()+Math.random().toString(36).substr(2,5)
 	clients.add(ws);
 
 	// Отправляем приветственное сообщение
@@ -49,6 +50,7 @@ wss.on('connection', function connection(ws) {
 			type: 'system',
 			data: 'Connected to chat',
 			timestamp: new Date().toLocaleTimeString(),
+			userId: userId
 		})
 	);
 
@@ -60,6 +62,7 @@ wss.on('connection', function connection(ws) {
 			type: 'message',
 			data: data.toString(),
 			timestamp: new Date().toLocaleTimeString(),
+			userId: userId
 		});
 
 		// Отправляем сообщение всем подключенным клиентам
@@ -67,6 +70,7 @@ wss.on('connection', function connection(ws) {
 			if (client.readyState === 1) {
 				// 1 = OPEN
 				client.send(messageData);
+
 			}
 		});
 	});

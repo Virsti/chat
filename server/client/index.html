@@ -31,6 +31,7 @@
 			const messageInput = document.getElementById('messageInput');
 			const sendButton = document.getElementById('sendButton');
 			const statusDiv = document.getElementById('status');
+			let myId = null;
 
 			let socket = null;
 			let reconnectAttempts = 0;
@@ -67,7 +68,8 @@
 				socket.onmessage = function (event) {
 					try {
 						const data = JSON.parse(event.data);
-						addMessage(data.data, data.type, data.timestamp);
+						
+						addMessage(data.data, data.type, data.timestamp, data.userId);
 					} catch (e) {
 						addMessage(event.data, 'message');
 					}
@@ -115,12 +117,20 @@
 			function addMessage(
 				text,
 				type = 'message',
-				timestamp = new Date().toLocaleTimeString()
+				timestamp = new Date().toLocaleTimeString(),
+				userId
 			) {
+				if (userId && !myId){
+					myId = userId
+					
+				}
+				console.log(userId, myId, userId== myId)
 				const messageDiv = document.createElement('div');
-				messageDiv.className = `message ${type}`;
+				messageDiv.className = `message ${type} ${userId == myId ? "from" : "to"}`;
+				
 
 				const messageText = document.createElement('div');
+				messageText.className = 'messageText'
 				messageText.textContent = text;
 
 				const timeSpan = document.createElement('div');
