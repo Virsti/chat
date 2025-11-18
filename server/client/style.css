@@ -1,6 +1,6 @@
 *{
     margin: 0;
-    box-sizing: 0;
+    box-sizing: border-box;
     padding: 0;
 }
 body{
@@ -11,7 +11,7 @@ body{
     grid-template-rows: auto 1fr auto;
     grid-template-areas: "logo" "chat_areas" "input_messages";
     gap: 1rem;
-    color:rgb(153, 141, 162);
+    color:rgb(131, 124, 136);
 }
 .status{
     position: absolute;
@@ -48,6 +48,12 @@ body{
 
 .input-container{
     grid-area: input_messages;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    max-width: 1500px;
+    width: 100%;
 }
 .timestamp{
     color: rgb(22, 21, 23);
@@ -61,4 +67,26 @@ body{
     width: fit-content;
     padding: 0.2rem 0.9rem;
     border-radius: 4px 4px 4px 4px;
+}
+#sendButton{
+    background-color: rgb(40, 36, 43);
+    outline: none;
+    border: none;
+}
+#sendButton:not(:disabled){
+    box-shadow: 0px 0px 5px 0 ;
+    color: rgb(143, 132, 153);
+}
+#messageInput{
+    background-color: rgb(40, 36, 43, 0.2);
+    outline: none;
+    border: none;
+    color: rgba(243, 243, 217, 0.3);
+    box-shadow: 0 0 5px 0;
+    margin-right: 0.5rem;
+
+}
+#messageInput::placeholder{
+    color:rgb(143, 132, 153,)
+    
 }
